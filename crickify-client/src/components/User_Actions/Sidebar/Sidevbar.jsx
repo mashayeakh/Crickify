@@ -147,7 +147,7 @@ const Sidevbar = () => {
                             <Link
                                 to="/profile"
                                 className={`flex items-center p-2 rounded-lg group 
-                                    ${location.pathname === "/dashboard"
+                                    ${location.pathname === "/profile"
                                         ? "bg-gray-100 text-gray-900 dark:text-white"
                                         : "text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"}`}
                             >

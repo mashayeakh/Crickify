@@ -37,6 +37,7 @@ import Jersey from './components/Home/Jersey.jsx'
 import ShowJersey from './components/Home/Jersey/ShowJersey.jsx'
 import AddJersey from './components/User_Actions/JerseyManage/AddJersey/AddJersey.jsx'
 import JerseyDetails from './components/Home/Jersey/JerseyDetails.jsx'
+import Profile from './components/User/Profile/Profile.jsx'
 // import FeatturedProductsProvider from './components/Context/FeatturedProductsProvider.jsx'
 
 
@@ -199,6 +200,12 @@ const router = createBrowserRouter(
           path: "/jersey_management/add-jersey",
           element: <AddJersey />,
         },
+
+        //! -------------------- Profile -----------------------------------------
+        {
+          path: "/profile",
+          element: <Profile />
+        }
       ]
     }
   ]

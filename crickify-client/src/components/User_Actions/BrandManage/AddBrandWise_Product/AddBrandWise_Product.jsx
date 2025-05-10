@@ -31,7 +31,7 @@ const AddBrandWise_Product = () => {
         const brandProductForm = {
             title: e.target.title.value.trim(),
             categoryOption: e.target.category.value.trim(),
-            priceTitle: e.target.price.value.trim(),
+            priceTitle: parseInt(e.target.price.value.trim(), 10), // Convert to int32
             imageUrl: e.target.imageUrl.value.trim(),
             descTitle: e.target.desc.value.trim(),
         }
@@ -40,8 +40,23 @@ const AddBrandWise_Product = () => {
 
 
         const url = "http://localhost:5000/addProductsByBrands";
-        const addProduct = await postMethod(url, brandProductForm);
-        console.log("Added Product ", addProduct);
+        // const addProduct = await postMethod(url, brandProductForm);
+        // console.log("Added Product ", addProduct);
+
+        try {
+
+            const data = await postMethod(url, brandProductForm);
+            // console.log("Data = ", data);
+            if (data.acknowledged) {
+                alert(`Successfully added, id ${data.insertedId}`);
+                console.log("Data = ", data);
+                e.target.reset();
+            } else {
+                alert("Failed to add")
+            }
+        } catch (err) {
+            console.log("Err = ", err.message);
+        }
 
     }
 

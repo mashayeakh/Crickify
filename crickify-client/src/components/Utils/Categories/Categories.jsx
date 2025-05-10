@@ -17,7 +17,7 @@ const Categories = ({ mode, onCategorySelect }) => {
     const categories = [
         { imgName: singleBat, slug: "bat" },
         { imgName: ball, slug: "ball" },
-        { imgName: acc, slug: "accessories" },
+        { imgName: acc, slug: "accesories" },
         { imgName: je, slug: "jersies" },
         { imgName: boots, slug: "boots" },
 

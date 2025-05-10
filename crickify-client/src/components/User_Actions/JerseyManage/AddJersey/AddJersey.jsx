@@ -5,7 +5,7 @@ import ReuseAddingForm from '../../ProductManage/ReuseForm/ReuseAddingForm';
 import Jersey from './../../../Home/Jersey';
 import { getMethod, postMethod } from '../../../Utils/Apis';
 
-const AddJersey = () => {
+const AddJersey = ({ category }) => {
 
 
     const [brand, setBrand] = useState([]);
@@ -42,7 +42,7 @@ const AddJersey = () => {
             brand: e.target.brand.value.trim(),
             country: e.target.country.value.trim(),
             sizes: e.target.sizes.value.trim(),
-            price: e.target.price.value.trim(),
+            price: e.targert.price.value.tim(),
             discount: e.target.discount.value.trim(),
             stock: e.target.stock.value.trim(),
             status: e.target.status.value.trim(),
@@ -54,8 +54,20 @@ const AddJersey = () => {
 
         //backend
         const url = "http://localhost:5000/jersies"
-        const data = await postMethod(url, formData);
-        console.log("Data ", data);
+        try {
+
+            const data = await postMethod(url, formData);
+            // console.log("Data = ", data);
+            if (data.acknowledged) {
+                alert(`Successfully added, id ${data.insertedId}`);
+                console.log("Data = ", data);
+                e.target.reset();
+            } else {
+                alert("Failed to add")
+            }
+        } catch (err) {
+            console.log("Err = ", err.message);
+        }
 
     };
 
@@ -98,14 +110,13 @@ const AddJersey = () => {
 
                                 </select>
                             </div>
+
                             <div>
                                 <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jersey Origin</label>
                                 <select
                                     name="country"
                                     className="select select-accent bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 >
-
-
                                     <option value="">Select Country</option>
                                     {country.map((c, idx) => (
                                         <option key={idx} value={c}>{c}</option>

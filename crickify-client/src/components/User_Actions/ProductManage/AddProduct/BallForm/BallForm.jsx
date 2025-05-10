@@ -2,7 +2,7 @@ import React from 'react'
 import ReuseAddingForm from '../../ReuseForm/ReuseAddingForm'
 import { postMethod } from '../../../../Utils/Apis';
 
-const BallForm = ({ category, brand, handle, wood }) => {
+const BallForm = ({ category, brand, wood }) => {
 
 
     const handleBall = async (e) => {
@@ -21,7 +21,7 @@ const BallForm = ({ category, brand, handle, wood }) => {
             type: e.target.type.value.trim(),
             size: e.target.size.value.trim(),
             weight: e.target.weight.value.trim(),
-            handleType: e.target.handleType.value.trim(),
+            // handleType: e.target.handleType.value.trim(),
             price: e.target.price.value.trim(),
             discount: e.target.discount.value.trim(),
             stock: e.target.stock.value.trim(),
@@ -63,8 +63,8 @@ const BallForm = ({ category, brand, handle, wood }) => {
                 weightTitle="Weight"
                 woodData={wood}
                 sizeTitle="Size"
-                handleTypeTitle="Handle Type"
-                handleData={handle}
+                // handleTypeTitle="Handle Type"
+                // handleData={handle}
                 priceTitle="Price"
                 discountTitle="Discount"
                 stockTitle="Stock"

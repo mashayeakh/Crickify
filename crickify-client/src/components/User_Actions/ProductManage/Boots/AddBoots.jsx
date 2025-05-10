@@ -25,8 +25,24 @@ const AddBoots = ({ category, brand }) => {
         console.log("Form Data ", bootForm);
 
         const url = "http://localhost:5000/boots";
-        const data = await postMethod(url, bootForm);
-        console.log(data);
+        // const data = await postMethod(url, bootForm);
+        // console.log(data);
+
+
+        try {
+
+            const data = await postMethod(url, bootForm);
+            // console.log("Data = ", data);
+            if (data.acknowledged) {
+                alert(`Successfully added, id ${data.insertedId}`);
+                console.log("Data = ", data);
+                e.target.reset();
+            } else {
+                alert("Failed to add")
+            }
+        } catch (err) {
+            console.log("Err = ", err.message);
+        }
 
     }
     const bootTypes = ["Spike", "Turf", "Flat"];

@@ -34,21 +34,19 @@ const AuthContextProvider = ({ children }) => {
         }))
         return () => unsubscribe();
     }, [])
-
-    // !signout the logged in user
     const signingOut = () => {
         return signOut(auth)
-            .then((res) => {
+            .then(() => {
                 // Sign-out successful.
-                console.log(res);
-                console.log("Sign out");
-            }).catch((error) => {
-                // An error happened.
+                console.log("User signed out successfully.");
+                return true;  // Return true when sign out is successful
+            })
+            .catch((error) => {
+                // An error occurred
                 console.log("Error while signing out", error.message);
-
+                return false;  // Return false if an error occurs
             });
     }
-
 
     const userInfo = {
         createUser,
@@ -56,8 +54,7 @@ const AuthContextProvider = ({ children }) => {
         signingOut,
         user,
         loading,
-
-    }
+    };
 
     return (
         <AuthContext.Provider value={userInfo}>

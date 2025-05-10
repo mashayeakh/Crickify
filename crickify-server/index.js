@@ -200,7 +200,7 @@ async function run() {
                 filterQuery.category = { $regex: new RegExp("ball", "i") };
                 result = await ballsCollection.find(filterQuery).toArray();
             }
-            else if (category.toLowerCase() === "accessories") {
+            else if (category.toLowerCase() === "guard" || category.toLowerCase() === "gloves" || category.toLowerCase() === "helmet" || category.toLowerCase() === "pad" || category.toLowerCase() === "thigh pad") {
                 // For accessories, you don't filter by category = accessories
                 // Instead, just fetch from accessories collection
                 result = await accesoriesCollection.find(filterQuery).toArray();
@@ -256,11 +256,17 @@ async function run() {
         app.get("/products", async (req, res) => {
             const cursor = batsCollection.find();
             const cursor2 = ballsCollection.find();
+            const cursor3 = jerseyCollection.find();
+            const cursor4 = accesoriesCollection.find();
+            const cursor5 = bootsCollection.find();
 
             const result = await cursor.toArray();
             const result2 = await cursor2.toArray();
+            const result3 = await cursor3.toArray();
+            const result4 = await cursor4.toArray();
+            const result5 = await cursor5.toArray();
 
-            const compinedResult = [...result, ...result2];
+            const compinedResult = [...result, ...result2, ...result3, ...result4, ...result5];
             console.log("compinedResult ", compinedResult);
             console.log("compinedResult ", compinedResult.length);
 
@@ -369,6 +375,16 @@ async function run() {
         });
 
 
+
+        //* find all the accesories
+        app.get("/all-accesories", async (req, res) => {
+            const cursor = accesoriesCollection.find();
+            const result = await cursor.toArray();
+
+            res.send(result);
+        })
+
+
         //* For specific product by id
         app.get("/product/:category/:id", async (req, res) => {
 
@@ -404,6 +420,67 @@ async function run() {
             } else {
                 res.status(404).send({ message: "Product is not found.. " })
             }
+        })
+
+        //* Get all the date for bats */
+        app.get("/lastest_products", async (req, res) => {
+            // const cursor = batsCollection.find({}, {
+            //     projection: {
+            //         _id: 0, //this is ignored
+            //         dateAdded: 1
+            //     }
+            // });
+            // const result = await cursor.toArray();
+            // console.log("All Date = ", result);
+            // res.send(result);
+
+
+            //? We need to get the sort the date for geting the latest one dateAdded - 1 then make the limit. 
+            //? here limit means how many date we want to get from the database
+
+            //bat
+            const lastestBat = await batsCollection
+                .find({})
+                .sort({ dateAdded: -1 })
+                .limit(2)
+                .toArray();
+
+            //ball
+            const lastestBall = await ballsCollection
+                .find({})
+                .sort({ dateAdded: -1 })
+                .limit(2)
+                .toArray();
+
+            //jersey
+            const lastestJersey = await jerseyCollection
+                .find({})
+                .sort({ dateAdded: -1 })
+                .limit(1)
+                .toArray();
+            //boots
+            const lastestBoots = await bootsCollection
+                .find({})
+                .sort({ dattAdded: -1 })
+                .limit(1)
+                .toArray();
+            //accessories
+            const lateAccessories = await accesoriesCollection
+                .find({})
+                .sort({ dateAdded: -1 })
+                .limit(1)
+                .toArray();
+
+
+
+
+            // console.log("Result ", lastestBat);
+
+            const allDates = [...lastestBat, ...lastestBall, ...lastestJersey, ...lastestBoots, ...lateAccessories]
+
+            console.log("Result ", allDates);
+            console.log("length", allDates.length);
+            res.send(allDates);
         })
 
 
@@ -546,6 +623,25 @@ async function run() {
             res.send(result);
         })
 
+        //*Search
+        app.get("/search-products", async (req, res) => {
+            const search = req.query.search?.toLowerCase();
+
+            const cursor = batsCollection.find();
+            const cursor2 = ballsCollection.find();
+
+            const result = await cursor.toArray();
+            const result2 = await cursor2.toArray();
+
+            const combinedResult = [...result, ...result2];
+
+            const searchedProduct = combinedResult.filter((item) =>
+                item.title?.toLowerCase().includes(search)
+            );
+
+            res.send(searchedProduct);
+        });
+
         //!----------------------------------- GLOBAL BRANDS ------------------------------------------------------
         //* add all the brands 
         app.post("/add-brands", async (req, res) => {
@@ -641,7 +737,10 @@ async function run() {
         // ! Jersey
         app.post("/jersies", async (req, res) => {
             const data = req.body;
-            console.log("DAta to be inserted", data);
+            console.log("Data to be inserted", data);
+
+            // Hardcode the category as "jersey"
+            data.category = "jersey";
 
             const result = await jerseyCollection.insertOne(data);
             res.send(result);

@@ -12,6 +12,8 @@ const StoreContextProvider = ({ children }) => {
     //all balls
     const [ball, setBall] = useState([]);
     const [jersery, setJersey] = useState([]);
+    const [boots, setBoots] = useState([]);
+    const [accesories, setAccesories,] = useState([]);
     const [loader, setLoader] = useState(true);
 
     const fetchBats = async () => {
@@ -24,7 +26,7 @@ const StoreContextProvider = ({ children }) => {
     const fetchBalls = async () => {
         const url = "http://localhost:5000/products"
         const data = await getMethod(url);
-        const ballCat = data.filter(d => d.category === "Ball" || d.category === "Balls")
+        const ballCat = data.filter(d => d.category === "ball" || d.category === "balls")
         setBall(ballCat);
         setLoader(true);
     }
@@ -35,11 +37,27 @@ const StoreContextProvider = ({ children }) => {
         setJersey(data);
         setLoader(true);
     }
+    const fetchBoots = async () => {
+        const url = "http://localhost:5000/get-boots"
+        const data = await getMethod(url);
+        // const ballCat = data.filter(d => d.category === "Ball" || d.category === "Balls")
+        setBoots(data);
+        setLoader(true);
+    }
+    const fetchAccesroeis = async () => {
+        const url = "http://localhost:5000/all-accesories"
+        const data = await getMethod(url);
+        // const ballCat = data.filter(d => d.category === "Ball" || d.category === "Balls")
+        setAccesories(data);
+        setLoader(true);
+    }
 
     useEffect(() => {
         fetchBats();
         fetchBalls();
         fetchJersey();
+        fetchBoots();
+        fetchAccesroeis();
     }, [])
 
     const appData = {
@@ -49,7 +67,9 @@ const StoreContextProvider = ({ children }) => {
         bat,
         ball,
         jersery,
-        loader
+        boots,
+        accesories,
+        loader,
     };
 
     return (

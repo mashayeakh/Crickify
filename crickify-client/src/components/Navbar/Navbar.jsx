@@ -30,10 +30,17 @@ const Navbar = () => {
         navigate("/singin");
     }
 
-    const handleSignout = e => {
+    const handleSignout = async (e) => {
         e.preventDefault();
-        signingOut();
-    }
+
+        // Call the signingOut function and wait for it to complete
+        const success = await signingOut();
+
+        // If signing out is successful, navigate to the signin page
+        if (success) {
+            navigate("/signin");
+        }
+    };
     // const { cartCount } = useContext(cartContext);
     // const navigate = useNavigate();
 

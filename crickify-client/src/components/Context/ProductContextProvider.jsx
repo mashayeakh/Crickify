@@ -11,21 +11,33 @@ const ProductContextProvider = ({ children }) => {
 
     const [jerseyProduct, setJerseyProduct] = useState([]);
     const [bootsProduct, setBootsProduct] = useState([]);
+    const [accesories, setAccesories] = useState([]);
 
 
 
     const fetchProducts = useCallback(async (cateogry) => {
         const data = await getMethod(`http://localhost:5000/products/${cateogry}`);
         setProduct(data);
+        console.log("DAta ", data);
         setLoader(true);
     }, [])
-
 
 
 
     const fetchJerseyProducts = useCallback(async () => {
         const data = await getMethod(`http://localhost:5000/all-jersies`);
         setJerseyProduct(data);
+        setLoader(true);
+    }, [])
+
+    const fetchBootsProducts = useCallback(async () => {
+        const data = await getMethod(`http://localhost:5000/get-boots`);
+        setBootsProduct(data);
+        setLoader(true);
+    }, [])
+    const fetchAccesories = useCallback(async () => {
+        const data = await getMethod(`http://localhost:5000/all-accesories`);
+        setAccesories(data);
         setLoader(true);
     }, [])
 
@@ -39,6 +51,10 @@ const ProductContextProvider = ({ children }) => {
     }, [])
 
 
+
+
+
+
     // useEffect(() => {
     //     fetchProducts();
     // }, [])
@@ -47,7 +63,9 @@ const ProductContextProvider = ({ children }) => {
 
         fetchProductsByCategoryAndId();
         fetchJerseyProducts();
-    }, [fetchProductsByCategoryAndId, fetchJerseyProducts])
+        fetchBootsProducts();
+        fetchAccesories();
+    }, [fetchProductsByCategoryAndId, fetchJerseyProducts, fetchBootsProducts, fetchAccesories])
 
 
 
@@ -59,7 +77,11 @@ const ProductContextProvider = ({ children }) => {
         fProducts,
         fetchProductsByCategoryAndId,
         fetchJerseyProducts,
-        jerseyProduct
+        jerseyProduct,
+        fetchBootsProducts,
+        bootsProduct,
+        fetchAccesories,
+        accesories,
     }
 
 

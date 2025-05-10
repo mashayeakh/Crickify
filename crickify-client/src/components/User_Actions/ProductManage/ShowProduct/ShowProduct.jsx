@@ -1,101 +1,125 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Sidevbar from "../../Sidebar/Sidevbar";
 import { useLoaderData } from "react-router";
 import { FaSort } from "react-icons/fa";
+import { getMethodOnFilteringProducts } from "../../../Utils/Apis";
 
 const ShowProduct = () => {
 
 
-    const data = useLoaderData();
+    const initalData = useLoaderData();
+    const [data, setData] = useState(initalData);
+
     console.log("All Products = ", data);
+
+    const [sortField, setSortField] = useState("id");
+    const [sortingOrder, setSortingOrder] = useState("asc");
+
+    const [searchTerm, setSearchTerm] = useState("");
+
+
+
+    // Function to handle search API call
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const url = "http://localhost:5000/search-products"; // Assuming this returns all products initially
+                const fetchedData = await getMethodOnFilteringProducts(url);
+                setData(fetchedData); // Store all fetched data
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+
+    const handleSortChange = (e) => {
+        const selectedSortingField = e.target.value;
+        console.log("Selected Feild = ", selectedSortingField);
+
+        // price === price
+        if (selectedSortingField === sortField) {
+            setSortField((prevItem) => (prevItem === "asc" ? "desc" : "asc"))
+        } else {
+            //price !== id
+            setSortField(selectedSortingField);
+            setSortingOrder("asc");
+        }
+    }
+
+
+    //based on sorting i need to render data, we are goona use memo to store data to recalculat.
+    const sortingData = useMemo(() => {
+
+        //if there is no data then return empty arr
+        if (!data) return [];
+
+        //if exists
+        if (data) {
+            const clonnedData = [...data];
+            return clonnedData.sort((a, b) => {
+                //grab the sorting Field value 
+                const aVal = a[sortField];
+                const bVal = b[sortField];
+
+                //if these sortField matchs with any of these then return 0;
+                if (aVal === null || aVal === undefined || bVal === null || bVal === undefined) return 0;
+
+                //if it is string then use localeCompare() to sort
+                if (typeof aVal === "string") {
+                    return sortingOrder === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+                }
+
+                //if it its numeric the a-b or b-a
+                return sortingOrder === "asc" ? aVal - bVal : bVal - aVal;
+
+            })
+        }
+
+
+    }, [data, sortField, sortingOrder])
+
+
 
 
     return (
         <>
-            <div className="flex flex-col h-[calc(100vh-4rem)] pt-16 bg-white">
-                <div className="flex flex-1 justify-center ">
+            <div className="flex flex-col h-[calc(100vh-4rem)] pt-16 bg-white ">
+                <div className="flex flex-1 justify-center">
                     <Sidevbar />
-                    <main className=" ml-0 sm:ml-64 w-full">
+                    <main className="ml-0 sm:ml-64 w-full overflow-x-hidden">
                         <div>
                             <p className="text-center text-3xl">
                                 Total Products ({data.length})
                             </p>
                         </div>
 
-                        <div className=" flex justify-center gap-10 "></div>
+                        <div className="flex justify-center gap-10"></div>
                         <div className="flex">
                             <div className="flex flex-1 justify-center items-center">
-                                <div className="relative overflow-x-auto w-full  sm:rounded-lg p-3">
+                                <div className="relative overflow-x-auto w-full sm:rounded-lg p-3">
                                     <div className="px-5 flex items-center justify-between flex-column md:flex-row flex-wrap space-y-4 md:space-y-0 py-4 bg-white dark:bg-gray-900">
                                         <div>
-                                            <button
-                                                id="dropdownActionButton"
-                                                data-dropdown-toggle="dropdownAction"
-                                                className="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                                                type="button"
+                                            <select
+                                                id="sortBy"
+                                                onChange={handleSortChange}
+                                                className="border rounded px-3 py-1 bg-gray-50  border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  flexdark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             >
-                                                <span className="sr-only">Action button</span>
-                                                Sort By
-                                                <svg
-                                                    className="w-2.5 h-2.5 ms-2.5"
-                                                    aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 10 6"
-                                                >
-                                                    <path
-                                                        stroke="currentColor"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="m1 1 4 4 4-4"
-                                                    />
-                                                </svg>
-                                            </button>
-                                            <div
-                                                id="dropdownAction"
-                                                className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 "
-                                            >
-                                                <ul
-                                                    className="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                                    aria-labelledby="dropdownActionButton"
-                                                >
-                                                    <li>
-                                                        <a
-                                                            href="#"
-                                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                        >
-                                                            Reward
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a
-                                                            href="#"
-                                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                        >
-                                                            Promote
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a
-                                                            href="#"
-                                                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                        >
-                                                            Activate account
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                                <div className="py-1">
-                                                    <a
-                                                        href="#"
-                                                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                                                    >
-                                                        Delete User
-                                                    </a>
-                                                </div>
-                                            </div>
+                                                {/* <option >Sort By </option> */}
+
+                                                <option value="id"> Sort By ID</option>
+                                                <option value="price">Sort By Price</option>
+                                                <option value="discount">Sort By Discount</option>
+                                            </select>
+                                            {/* <span className="ml-4">
+                                                {sortingOrder === "asc" ? "Low to High" : "High to Low"}
+                                            </span> */}
+
                                         </div>
-                                        <label for="table-search" className="sr-only">
+                                        <label htmlFor="table-search" className="sr-only">
                                             Search
                                         </label>
                                         <div className="relative">
@@ -118,64 +142,63 @@ const ShowProduct = () => {
                                             </div>
                                             <input
                                                 type="text"
-                                                id="table-search-users"
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
                                                 className="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 placeholder="Search for users"
                                             />
                                         </div>
                                     </div>
-                                    {/* <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto"> */}
                                     <div className="overflow-hidden rounded-lg border border-gray-300">
                                         <table className="min-w-full text-sm text-left text-gray-500">
-
                                             <thead className="text-sm text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                                <tr className="">
+                                                <tr>
                                                     <th scope="col" className="px-6 py-6 cursor-pointer">
                                                         <div className="flex items-center gap-1">
-                                                            Product Id <FaSort />
+                                                            Product_Id
                                                         </div>
                                                     </th>
                                                     <th scope="col" className="px-3 py-6 cursor-pointer">
                                                         <div className="flex items-center gap-1">
-                                                            Product Name <FaSort />
+                                                            Product Name
                                                         </div>
                                                     </th>
 
                                                     <th scope="col" className="px-2 py-6 cursor-pointer">
                                                         <div className="flex items-center gap-1">
-                                                            Brand <FaSort />
+                                                            Brand
                                                         </div>
 
                                                     </th>
                                                     <th scope="col" className="px-2 py-6 cursor-pointer">
                                                         <div className="flex items-center gap-1">
-                                                            Category <FaSort />
+                                                            Category
                                                         </div>
                                                     </th>
                                                     <th scope="col" className="px-2 py-6 cursor-pointer">
                                                         <div className="flex items-center ">
-                                                            Handle Type <FaSort />
+                                                            Handle Type
 
                                                         </div>
                                                     </th>
                                                     <th scope="col" className="px-2 py-6 cursor-pointer">
                                                         <div className="flex items-center ">
-                                                            Discount<FaSort />
+                                                            Discount
                                                         </div>
                                                     </th>
                                                     <th scope="col" className="px-2 py-6 cursor-pointer">
                                                         <div className="flex items-center ">
-                                                            Price <FaSort />
+                                                            Price
                                                         </div>
                                                     </th>
                                                     <th scope="col" className="px-2 py-6 cursor-pointer">
                                                         <div className="flex items-center ">
-                                                            Stock <FaSort />
+                                                            Stock
                                                         </div>
                                                     </th>
                                                     <th scope="col" className="px-2 py-6 cursor-pointer">
                                                         <div className="flex items-center ">
-                                                            Weight <FaSort />
+                                                            Weight
                                                         </div>
                                                     </th>
                                                     <th scope="col" className="px-6 py-3">
@@ -185,10 +208,14 @@ const ShowProduct = () => {
                                             </thead>
 
                                             <tbody>
-                                                {
-                                                    data && data.map((eachData, index) => (
+                                                {sortingData
+                                                    .filter((product) => {
+                                                        // If search term exists, filter the products based on title
+                                                        return searchTerm.trim() === "" || product.title?.toLowerCase().includes(searchTerm.toLowerCase());
+                                                    })
+                                                    .map((eachData, index) => (
                                                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                            <td className="w-4 p-4  border">{ }</td>
+                                                            <td className="w-4 p-4  border">{eachData?._id}</td>
 
                                                             <th
                                                                 scope="row"
@@ -204,9 +231,20 @@ const ShowProduct = () => {
                                                                         {eachData?.title}
                                                                     </div>
                                                                     <div className="font-normal text-gray-500">
-                                                                        <div className="badge badge-soft badge-primary  mr-4">{eachData?.type}</div>
 
-                                                                        <div className="text-[10px] badge badge-warning">{eachData?.size}</div>
+                                                                        {
+                                                                            eachData.type ?
+                                                                                <div>
+                                                                                    <div className="badge badge-soft badge-primary  mr-4">{eachData?.type}</div>
+
+                                                                                    <div className="text-[10px] badge badge-warning">{eachData?.size}</div>
+                                                                                </div>
+                                                                                :
+                                                                                <div>
+                                                                                    <div className="badge badge badge-error">N/A</div>
+
+                                                                                </div>
+                                                                        }
                                                                     </div>
                                                                 </div>
                                                             </th>
@@ -223,7 +261,7 @@ const ShowProduct = () => {
                                                                     href="#"
                                                                     className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                                                                 >
-                                                                    Edit user
+                                                                    Edit
                                                                 </a>
                                                             </td>
                                                         </tr>

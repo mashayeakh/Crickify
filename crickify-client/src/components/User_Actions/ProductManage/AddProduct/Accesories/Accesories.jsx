@@ -64,7 +64,6 @@ const Accesories = ({ brand }) => {
 
     }
 
-
     //! to access accessories ["pad", "helmet", "guard", "gloves", "thigh pad"] 
 
     const [accCat, setAccCat] = useState([]);

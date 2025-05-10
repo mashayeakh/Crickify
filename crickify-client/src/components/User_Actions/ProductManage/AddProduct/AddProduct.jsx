@@ -122,7 +122,7 @@ const AddProduct = () => {
                                             <BallForm
                                                 category={selectedCategoryslug}
                                                 brand={brandByCategory}
-                                                handle={handleType}
+                                                // handle={handleType}
                                                 wood={woodType}
                                             />
                                         }
@@ -136,7 +136,7 @@ const AddProduct = () => {
                                         }
                                         {selectedCategoryslug === 'jersies' &&
                                             <AddJersey
-                                                // category={accTitle}
+                                                category={selectedCategoryslug}
                                                 brand={brandByCategory}
                                                 sizes={sizes}
 
