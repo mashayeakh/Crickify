@@ -18,7 +18,7 @@ const Signin = () => {
 
     const handleSignup = (e) => {
         e.preventDefault();
-        navigate("/singup");
+        navigate("/signup");
     }
 
     const handleLogin = async (e) => {

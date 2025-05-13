@@ -58,16 +58,13 @@ const router = createBrowserRouter(
           element: <Categories />,
 
         },
-        {
-          path: "/singin",
-          element: <Signin />
-        },
+
         {
           path: "/garden_equipment/news",
           element: <GroundEquipment />
         },
         {
-          path: "/singup",
+          path: "/signup",
           element: <Signup />
         },
         {
@@ -219,7 +216,8 @@ const router = createBrowserRouter(
         //! -------------------- Profile -----------------------------------------
         {
           path: "/profile",
-          element: <Profile />
+          element: <Profile />,
+          // loader:()=> fetch()
         }
       ]
     }

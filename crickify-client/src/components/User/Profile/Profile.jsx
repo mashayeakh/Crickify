@@ -7,16 +7,16 @@ const Profile = () => {
 
     const { user } = useContext(AuthContext);
     const [isEditing, setIsEditing] = useState();
+    
 
 
-
-    const btn = (
-        <div>
-            <button onClick={() => setIsEditing(!isEditing)} className='border-2 px-2 py-1 rounded-lg flex gap-1 items-center'>
-                <MdOutlineModeEditOutline /> Edit
-            </button>
-        </div>
-    );
+    // const btn = (
+    //     <div>
+    //         <button onClick={() => setIsEditing(!isEditing)} className='border-2 px-2 py-1 rounded-lg flex gap-1 items-center'>
+    //             <MdOutlineModeEditOutline /> Edit
+    //         </button>
+    //     </div>
+    // );
 
 
     let fname = "";
@@ -74,7 +74,7 @@ const Profile = () => {
                                     <p className='text-gray-500'>Los Angeles, California, USA</p>
                                 </div>
                             </div>
-                            {btn}
+                            {/* {btn} */}
                         </div>
 
                         <p className='pt-5'>Personal Information</p>
@@ -106,7 +106,7 @@ const Profile = () => {
                                         </div>
                                         <div>
                                             <label className='text-lg text-gray-400'>Phone</label>
-                                            <p className='text-xl text-gray-400 font-bold'>01792224594</p>
+                                            <p className='text-xl text-gray-400 font-bold'>{user?.phone}</p>
                                         </div>
                                     </div>
 
@@ -122,13 +122,10 @@ const Profile = () => {
                                     </div>
                                 </div>
                             </div>
-                            {btn}
+                            {/* {btn} */}
                         </div>
 
-                        <div className="card-actions justify-between mt-10 px-10">
-                            {/* <div className="btn btn-primary">Change your password</div> */}
-                            <div className="btn btn-success">Save</div>
-                        </div>
+
                     </div>
                 </div>
             </div>

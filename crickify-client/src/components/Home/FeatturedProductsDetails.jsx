@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
-import { useLoaderData } from 'react-router'
+import { useLoaderData, useNavigate } from 'react-router'
 import { cartContext } from '../Context/CartContextProvider';
+import { AuthContext } from '../Context/AuthContextProvider';
 
 const FeatturedProductsDetails = () => {
 
@@ -22,16 +23,29 @@ const FeatturedProductsDetails = () => {
 
 
     const { addCart, cartCount } = useContext(cartContext);
+    const { user, loading } = useContext(AuthContext);
 
+    const navigate = useNavigate();
+
+    console.log("USER = ", user);
+
+    if (loading) {
+        return <p>Loading user...</p>; // or a spinner
+    }
 
     const handleCart = (e, product) => {
         e.preventDefault();
 
+        if (!user) {
+            alert("Please sign in to add products to the cart.");
+            navigate("/signin");
+            return;
+        }
+
         console.log("Cart Clicked");
         addCart(product);
-        alert('Product added');
-
-    }
+        alert('Product added!!!!!');
+    };
 
     console.log("Cart Count ", cartCount.length);
     // console.log(Array.isArray(cartCount));
@@ -99,11 +113,7 @@ const FeatturedProductsDetails = () => {
                                         {svg}
                                         Add to Cart
                                     </button>
-                                    {/* <button
-                                        className="bg-gray-200 flex gap-2 items-center  text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                                        {svg2}
-                                        Wishlist
-                                    </button> */}
+
                                 </div>
 
                                 {/* <div>

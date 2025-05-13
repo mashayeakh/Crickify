@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { BsCheckLg } from 'react-icons/bs';
 import { useLocation, useParams } from 'react-router'
+import { cartContext } from '../Context/CartContextProvider';
 
 const UserPayment = () => {
 
@@ -27,6 +28,9 @@ const UserPayment = () => {
         }
     }
 
+    const { addCart, cartCount, setCartCount } = useContext(cartContext);
+
+
 
     const handleCard = (e) => {
         e.preventDefault();
@@ -39,23 +43,25 @@ const UserPayment = () => {
         if (cardData.cardNumber && cardData.dob && cardData.cvv) {
             alert("Your payment has been successfuly processed");
             e.target.reset();
+            setCartCount(0);
         } else {
             alert("Please fill in all fields correctly.");
 
         }
     }
 
+
+
     return (
         <>
-            <div className='py-[15%]'>
+            <div className='py-[10%]'>
                 {
                     paymentMethod === "cc" ?
 
-
-
                         <form onSubmit={handleCard} className="max-w-sm mx-auto">
-                            <label for="card-number-input" className="sr-only">Card number:</label>
-                            <div className="relative">
+                            <div className='pb-5'>
+                                <p className='text-center text-2xl'>Enter your card information</p>
+                            </div>                           <div className="relative">
                                 <input
                                     type="text"
                                     name="card_number"

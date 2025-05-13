@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { getMethod } from '../../Utils/Apis';
 // import { getMethod } from '../Utils/Apis';
 import Sidevbar from './../../User_Actions/Sidebar/Sidevbar';
 import { cartContext } from '../../Context/CartContextProvider';
+import { AuthContext } from '../../Context/AuthContextProvider';
 const ReuseBrands = () => {
     const { title } = useParams();
     console.log("Path ", title);
@@ -20,10 +21,25 @@ const ReuseBrands = () => {
 
     }, [title]);
     const { addCart, cartCount } = useContext(cartContext);
+    const { user, loading } = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
+    console.log("USER = ", user);
+
+    if (loading) {
+        return <p>Loading user...</p>; // or a spinner
+    }
 
 
     const handleCart = (e, product) => {
         e.preventDefault();
+
+        if (!user) {
+            alert("Please sign in to add products to the cart.");
+            navigate("/signin");
+            return;
+        }
 
         console.log("Cart Clicked");
         addCart(product);

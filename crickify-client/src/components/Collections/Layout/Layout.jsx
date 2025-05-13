@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { ProductContext } from '../../Context/ProductContextProvider';
 import { getMethodOnFilteringProducts } from '../../Utils/Apis';
 import { cartContext } from '../../Context/CartContextProvider';
+import { AuthContext } from '../../Context/AuthContextProvider';
+import { useNavigate } from 'react-router';
 
 const Layout = ({ category }) => {
     const { fetchProducts, product, jerseyProduct, bootsProduct, accesories } = useContext(ProductContext);
@@ -94,10 +96,26 @@ const Layout = ({ category }) => {
 
 
     const { addCart, cartCount } = useContext(cartContext);
+    const { user, loading } = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
+    console.log("USER = ", user);
+
+    if (loading) {
+        return <p>Loading user...</p>; // or a spinner
+    }
 
 
     const handleCart = (e, product) => {
         e.preventDefault();
+
+        if (!user) {
+            alert("Please sign in to add products to the cart.");
+            navigate("/signin");
+            return;
+        }
+
 
         console.log("Cart Clicked");
         addCart(product);

@@ -14,6 +14,7 @@ const CartContextProvider = ({ children }) => {
 
     const cartInfo = {
         addCart,
+        setCartCount,
         cartCount,
     }
 

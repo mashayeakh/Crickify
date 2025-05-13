@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import jersey from "../../assets/Images/Jersey/jersey.jpg"
 import { Link } from 'react-router';
+import { cartContext } from '../Context/CartContextProvider';
 
 const Jersey = () => {
+
+
+    
+
     return (
         <>
             <Link to={"/jerseies"}>
