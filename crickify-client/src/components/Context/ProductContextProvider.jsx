@@ -42,13 +42,13 @@ const ProductContextProvider = ({ children }) => {
     }, [])
 
 
-
     const fetchProductsByCategoryAndId = useCallback(async (category, id) => {
         const data = await getMethod(`http://localhost:5000/product/${category}/${id}`);
         setFProducts(data);
+        console.log("Fetched inside fetch function", data); // ✅ log here directly
         setLoader(true);
+    }, []);
 
-    }, [])
 
 
 

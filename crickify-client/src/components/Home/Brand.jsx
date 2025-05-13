@@ -16,9 +16,6 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { getMethod } from '../Utils/Apis'
 import { Link } from 'react-router'
-
-
-
 const Brand = () => {
     // const imgs = [adi, dsc, gm, gray, Kookaburra, mrf, nb, rebook, SG, ss];
 

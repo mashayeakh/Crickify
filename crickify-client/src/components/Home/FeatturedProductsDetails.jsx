@@ -5,7 +5,7 @@ import { cartContext } from '../Context/CartContextProvider';
 const FeatturedProductsDetails = () => {
 
     const data = useLoaderData();
-    console.log("Data =", data);
+    console.log("Data =====", data);
 
 
 
@@ -50,9 +50,6 @@ const FeatturedProductsDetails = () => {
 
                                 </div>
                             </div>
-
-
-
 
                             <div className="w-full md:w-1/2 px-4">
                                 <h2 className="text-3xl text-start font-bold mb-2">{data?.title}</h2>
@@ -102,11 +99,11 @@ const FeatturedProductsDetails = () => {
                                         {svg}
                                         Add to Cart
                                     </button>
-                                    <button
+                                    {/* <button
                                         className="bg-gray-200 flex gap-2 items-center  text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                                         {svg2}
                                         Wishlist
-                                    </button>
+                                    </button> */}
                                 </div>
 
                                 {/* <div>

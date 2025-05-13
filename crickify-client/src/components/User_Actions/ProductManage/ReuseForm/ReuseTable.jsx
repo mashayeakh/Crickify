@@ -22,7 +22,7 @@ const ReuseTable = ({ idField, nameField, statusField, descField, data, columns,
                                                 </div>
                                             </th>
                                         ))}
-                                        <th scope="col" className="px-6 py-3">Action</th>
+                                        {/* <th scope="col" className="px-6 py-3">Action</th> */}
                                     </tr>
                                 </thead>
 
@@ -36,9 +36,9 @@ const ReuseTable = ({ idField, nameField, statusField, descField, data, columns,
                                                     {eachData[col] || 'N/A'}
                                                 </td>
                                             ))}
-                                            <td className="px-6 py-4 border">
+                                            {/* <td className="px-6 py-4 border">
                                                 <a href="#" className="font-medium text-blue-600 hover:underline">Edit</a>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
                                 </tbody>

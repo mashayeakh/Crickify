@@ -114,26 +114,22 @@ export async function getMethodOnFilteringProducts(url, filters = {}) {
         throw err;
     }
 }
+// Delete method based on category and id
+export async function deleteMethodOnCategoryAndId(category, id) {
+    try {
+        const url = `http://localhost:5000/delete/${category}/${id}`;
+        const response = await fetch(url, {
+            method: "DELETE"
+        });
 
-// export async function getMethodOnDiscount(url, category, discount) {
-//     //http://localhost:5000/products?category=electronics&discount=30
+        const result = await response.json();
 
-//     try {
-//         const response = await fetch(`${url}/products?category=${category}&discount=${discount}`, {
-//             method: "GET",
-//             headers: {
-//                 "content-type": "application/json"
-//             },
-//             // body: JSON.stringify(data)
-//         });
-//         const result = await response.json();
-
-//         if (!response.ok) {
-//             throw new Error(result.message || `HTTP error ! staus ${response.status}`);
-//         }
-//         return result;
-
-//     } catch (err) {
-//         console.log("Err => ", err);
-//     }
-// }
+        if (!response.ok) {
+            throw new Error(result.message || `HTTP error! Status: ${response.status}`);
+        }
+        return result;
+    } catch (err) {
+        console.log("Error:", err);
+        throw err;
+    }
+}

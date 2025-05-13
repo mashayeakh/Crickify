@@ -47,7 +47,7 @@ async function run() {
         const bootsCollection = database.collection("boots");
 
 
-        //! Post method to create users (sign in)
+        //! Post method to create users (sign up)
         app.post("/users", async (req, res) => {
             const data = req.body;
             console.log("Data to be inserted = ", data);
@@ -73,7 +73,7 @@ async function run() {
 
         })
 
-        //! Patch method to insert a specific col in the existing user while logging. 
+        //! Patch method to insert a specific col in the existing user while logging.
         app.patch("/login", async (req, res) => {
             const existingEmail = req?.body?.email;
 
@@ -99,6 +99,44 @@ async function run() {
 
             // console.log("Logged in data = ", data);
         })
+
+        // app.patch("/login", async (req, res) => {
+        //     const existingEmail = req?.body?.email;
+
+        //     // Matching the existing email
+        //     const filter = { email: existingEmail };
+
+        //     // Update the login time
+        //     const updateInfo = {
+        //         $set: {
+        //             lastSignInTime: req?.body?.currDate
+        //         }
+        //     };
+
+        //     try {
+        //         const result = await userCollection.updateOne(filter, updateInfo);
+
+        //         // If user is found and the login time was updated
+        //         if (result.modifiedCount > 0 || result.matchedCount === 1) {
+        //             // Fetch the user data including the userId
+        //             const user = await userCollection.findOne(filter, { projection: { _id: 1, email: 1, displayName: 1 } });
+
+        //             // Send the user data and userId in the response
+        //             res.send({
+        //                 message: "Login time updated!",
+        //                 userId: user._id, // Send the userId from backend
+        //                 email: user.email,
+        //                 displayName: user.displayName,
+        //                 // other data you might want to send
+        //             });
+        //         } else {
+        //             res.status(404).send({ message: "User not found!" });
+        //         }
+        //     } catch (err) {
+        //         res.status(500).send({ message: "Error during login!", error: err.message });
+        //     }
+        // });
+
 
         //! ------------------------ Product Management ----------------------------
 
@@ -408,7 +446,22 @@ async function run() {
             } else if (category === "ball" || category === "balls") {
                 collections = ballsCollection
                 // console.log("Collections : ", collections);
-            } else {
+            } else if (
+                category === "helmet" ||
+                category === "pad" ||
+                category === "thigh pad" ||
+                category === "gloves" ||
+                category === "guard"
+            ) {
+                collections = accesoriesCollection;
+            } else if (category === "jersey") {
+                collections = jerseyCollection;
+            } else if (
+                category === "boots" || category === "boot") {
+                collections = bootsCollection;
+            }
+
+            else {
                 console.log("Category is not found...");
                 return res.status(400).send({ message: "Invalid category" })
             }
@@ -787,6 +840,252 @@ async function run() {
 
             res.send(cursor);
         })
+
+
+        //! delete based on category and id
+        app.delete("/delete/:category/:id", async (req, res) => {
+            const { category, id } = req.params
+            console.log("Category and id ", category, id);
+
+            //for invalid id
+            if (!(ObjectId.isValid(id))) {
+                res.send("Not a valid id");
+            }
+
+            let collections;
+            if (category === "bat" || category === "bats") {
+                collections = batsCollection;
+                // console.log("Collections : ", collections);
+            } else if (category === "ball" || category === "balls") {
+                collections = ballsCollection
+                // console.log("Collections : ", collections);
+            } else if (
+                category === "helmet" ||
+                category === "pad" ||
+                category === "thigh pad" ||
+                category === "gloves" ||
+                category === "guard"
+            ) {
+                collections = accesoriesCollection;
+            } else if (category === "jersey") {
+                collections = jerseyCollection;
+            } else if (
+                category === "boots" || category === "boot") {
+                collections = bootsCollection;
+            }
+
+            else {
+                console.log("Category is not found...");
+                return res.status(400).send({ message: "Invalid category" })
+            }
+
+            const result = await collections.deleteOne({ _id: new ObjectId(id) });
+
+            if (result.deletedCount === 1) {
+                res.send({ message: "Product deleted successfully.", deletedCount: 1 });
+            } else {
+                res.send({ message: "Product not found.", deletedCount: 0 });
+            }
+        })
+
+        //!delete
+        app.delete("/delete/:id", async (req, res) => {
+            const { id } = req.params;
+            console.log("ID ", id);
+            const query = { _id: new ObjectId(id) };
+            let collections;
+            if (category === "bat" || category === "bats") {
+                collections = batsCollection;
+                // console.log("Collections : ", collections);
+            } else if (category === "ball" || category === "balls") {
+                collections = ballsCollection
+                // console.log("Collections : ", collections);
+            } else if (
+                category === "helmet" ||
+                category === "pad" ||
+                category === "thigh pad" ||
+                category === "gloves" ||
+                category === "guard"
+            ) {
+                collections = accesoriesCollection;
+            } else if (category === "jersey") {
+                collections = jerseyCollection;
+            } else if (
+                category === "boots" || category === "boot") {
+                collections = bootsCollection;
+            }
+            const result = await collections.deleteOne(query);
+            res.send({ message: "Deleted!!" }, result);
+        })
+
+
+        //!Edit
+        app.get("/edit/:category/:id", async (req, res) => {
+            const { category, id } = req.params;
+            let collection;
+
+            switch (category.toLowerCase()) {
+                case "bat":
+                case "bats":
+                    collection = batsCollection;
+                    break;
+                case "ball":
+                case "balls":
+                    collection = ballsCollection;
+                    break;
+                case "helmet":
+                case "pad":
+                case "thigh pad":
+                case "gloves":
+                case "guard":
+                    collection = accesoriesCollection;
+                    break;
+                case "jersey":
+                    collection = jerseyCollection;
+                    break;
+                case "boot":
+                case "boots":
+                    collection = bootsCollection;
+                    break;
+                default:
+                    return res.status(400).send({ error: "Invalid category" });
+            }
+
+            try {
+                const result = await collection.findOne({ _id: new ObjectId(id) });
+                if (!result) {
+                    return res.status(404).send({ error: "Product not found" });
+                }
+                res.send(result);
+            } catch (err) {
+                res.status(500).send({ error: "Failed to fetch product" });
+            }
+        });
+
+        //!Edit
+        app.put("/edit/:category/:id", async (req, res) => {
+            const { category, id } = req.params;
+            const updatedData = req.body;
+            let collection;
+
+            switch (category.toLowerCase()) {
+                case "bat":
+                case "bats":
+                    collection = batsCollection;
+                    break;
+                case "ball":
+                case "balls":
+                    collection = ballsCollection;
+                    break;
+                case "helmet":
+                case "pad":
+                case "thigh pad":
+                case "gloves":
+                case "guard":
+                    collection = accesoriesCollection;
+                    break;
+                case "jersey":
+                    collection = jerseyCollection;
+                    break;
+                case "boot":
+                case "boots":
+                    collection = bootsCollection;
+                    break;
+                default:
+                    return res.status(400).send({ error: "Invalid category" });
+            }
+
+            const filter = { _id: new ObjectId(id) };
+            const updateDoc = { $set: updatedData };
+            const options = { upsert: false };
+
+            try {
+                const result = await collection.updateOne(filter, updateDoc, options);
+                res.send(result);
+            } catch (err) {
+                res.status(500).send({ error: "Update failed" });
+            }
+        });
+
+
+
+        // Example API endpoint to get user data
+        app.get('/api/user/profile/:id', async (req, res) => {
+            const id = req.params.id;
+
+            try {
+                const user = await userCollection.findOne({ _id: new ObjectId(id) });
+
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found' });
+                }
+
+                res.json(user);
+            } catch (error) {
+                res.status(400).json({ message: 'Invalid user ID format' });
+            }
+        });
+
+
+
+
+
+
+        //!Edit your profile
+        // app.put("/edit-profile/:id", async (req, res) => {
+        //     const editedId = req.params.id;
+
+        //     console.log("Edited ID :", editedId);
+
+        //     const filter = { _id: new ObjectId(editedId) };
+        //     const options = { upsert: true };
+
+        //     const updateUser = {
+        //         $set: {
+        //             name: req.body.name,
+        //             email: req.body.email
+        //         }
+        //     }
+
+        //     const result = await userCollection.updateOne(filter, updateUser, options);
+        //     if (result) {
+        //         res.send(result);
+        //         console.log(`${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
+        //         );
+        //     } else {
+        //         res.send({
+        //             message: "Not Found!!",
+        //             status: false,
+        //         })
+        //     }
+        // })
+        app.put('/edit-profile/:id', async (req, res) => {
+            const { name, email } = req.body;
+            const userId = req.params.id;
+
+            try {
+                const result = await userCollection.collection('users').doc(userId).update({ name, email });
+                res.send({ success: true }, result);
+            } catch (error) {
+                console.error('Error updating profile in DB:', error);
+                res.status(500).send({ success: false, error: 'Internal Server Error' });
+            }
+        });
+
+
+        app.get('/api/user/by-email/:email', async (req, res) => {
+            const email = req.params.email;
+            try {
+                const user = await userCollection.findOne({ email });
+                if (!user) return res.status(404).json({ message: 'User not found' });
+                res.json(user);
+            } catch (err) {
+                res.status(500).json({ message: 'Server error' });
+            }
+        });
+
+
+        // aprofile
 
 
         // // ----------------------------- Grab the categories status only --------------------------------------------

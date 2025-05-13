@@ -159,7 +159,7 @@ const AddProduct = () => {
                                 </div>
                             </div>
                         )}
-                        slug : {selectedCategoryslug}
+                        {/* slug : {selectedCategoryslug} */}
 
                     </main>
                     {/* {selectedCategoryslug === 'balls' && <BallForm />}

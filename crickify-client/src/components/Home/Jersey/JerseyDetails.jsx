@@ -70,10 +70,10 @@ const JerseyDetails = () => {
                                 <h2 className="text-3xl text-start font-bold mb-2">{data?.title}</h2>
 
                                 <div className='flex gap-4'>
-                                    {/* 
+
                                     <p className='badge badge-primary'>
                                         {data?.category}
-                                    </p> */}
+                                    </p>
                                     <p className='badge badge-success'>
                                         Brand : {data?.brand}
                                     </p>
@@ -119,11 +119,11 @@ const JerseyDetails = () => {
                                         {svg}
                                         Add to Cart
                                     </button>
-                                    <button
+                                    {/* <button
                                         className="bg-gray-200 flex gap-2 items-center  text-gray-800 px-6 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                                         {svg2}
                                         Wishlist
-                                    </button>
+                                    </button> */}
                                 </div>
 
                                 {/* <div>

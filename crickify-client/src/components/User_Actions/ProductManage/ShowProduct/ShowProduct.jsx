@@ -1,26 +1,24 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Sidevbar from "../../Sidebar/Sidevbar";
-import { useLoaderData } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { FaSort } from "react-icons/fa";
 import { getMethodOnFilteringProducts } from "../../../Utils/Apis";
+import Swal from './../../../../../node_modules/sweetalert2/src/sweetalert2';
 
 const ShowProduct = () => {
 
 
     const initalData = useLoaderData();
     const [data, setData] = useState(initalData);
-
-    console.log("All Products = ", data);
-
     const [sortField, setSortField] = useState("id");
     const [sortingOrder, setSortingOrder] = useState("asc");
-
     const [searchTerm, setSearchTerm] = useState("");
 
-
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1); // Current page
+    const itemsPerPage = 5; // Number of products per page
 
     // Function to handle search API call
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -35,55 +33,74 @@ const ShowProduct = () => {
         fetchData();
     }, []);
 
-
     const handleSortChange = (e) => {
         const selectedSortingField = e.target.value;
-        console.log("Selected Feild = ", selectedSortingField);
+        console.log("Selected Field = ", selectedSortingField);
 
-        // price === price
         if (selectedSortingField === sortField) {
-            setSortField((prevItem) => (prevItem === "asc" ? "desc" : "asc"))
+            setSortingOrder((prev) => (prev === "asc" ? "desc" : "asc"));
         } else {
-            //price !== id
             setSortField(selectedSortingField);
             setSortingOrder("asc");
         }
-    }
+    };
 
-
-    //based on sorting i need to render data, we are goona use memo to store data to recalculat.
+    // Sorting Logic
     const sortingData = useMemo(() => {
-
-        //if there is no data then return empty arr
         if (!data) return [];
 
-        //if exists
-        if (data) {
-            const clonnedData = [...data];
-            return clonnedData.sort((a, b) => {
-                //grab the sorting Field value 
-                const aVal = a[sortField];
-                const bVal = b[sortField];
+        const clonedData = [...data];
+        return clonedData.sort((a, b) => {
+            const aVal = a[sortField];
+            const bVal = b[sortField];
 
-                //if these sortField matchs with any of these then return 0;
-                if (aVal === null || aVal === undefined || bVal === null || bVal === undefined) return 0;
+            if (aVal === null || aVal === undefined || bVal === null || bVal === undefined) return 0;
 
-                //if it is string then use localeCompare() to sort
-                if (typeof aVal === "string") {
-                    return sortingOrder === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-                }
+            if (typeof aVal === "string") {
+                return sortingOrder === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+            }
 
-                //if it its numeric the a-b or b-a
-                return sortingOrder === "asc" ? aVal - bVal : bVal - aVal;
+            return sortingOrder === "asc" ? aVal - bVal : bVal - aVal;
+        });
+    }, [data, sortField, sortingOrder]);
 
-            })
+    // Pagination Logic - Slice data to show current page products
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = sortingData.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Total pages calculation
+    const totalPages = Math.ceil(sortingData.length / itemsPerPage);
+
+    // Handle pagination button click
+    const handlePageClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    // Handle delete with confirmation
+    const handleDelete = async (category, id) => {
+        const url = `http://localhost:5000/delete/${category}/${id}`;
+
+        try {
+            const response = await fetch(url, {
+                method: "DELETE",
+            });
+            const result = await response.json();
+            console.log("Delete response:", result);
+
+            if (result.deletedCount === 1) {
+                alert("Deleted");
+
+                const updatedData = data.filter(item => item._id !== id);
+                setData(updatedData);
+            } else {
+                alert("Item not found or could not be deleted.");
+            }
+        } catch (error) {
+            console.error("Delete failed:", error);
+            alert("Failed to delete!");
         }
-
-
-    }, [data, sortField, sortingOrder])
-
-
-
+    };
 
     return (
         <>
@@ -208,10 +225,12 @@ const ShowProduct = () => {
                                             </thead>
 
                                             <tbody>
-                                                {sortingData
+                                                {currentItems
                                                     .filter((product) => {
-                                                        // If search term exists, filter the products based on title
-                                                        return searchTerm.trim() === "" || product.title?.toLowerCase().includes(searchTerm.toLowerCase());
+                                                        return (
+                                                            searchTerm.trim() === "" ||
+                                                            product.title?.toLowerCase().includes(searchTerm.toLowerCase())
+                                                        );
                                                     })
                                                     .map((eachData, index) => (
                                                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -241,7 +260,7 @@ const ShowProduct = () => {
                                                                                 </div>
                                                                                 :
                                                                                 <div>
-                                                                                    <div className="badge badge badge-error">N/A</div>
+                                                                                    <div className="badge badge-error">N/A</div>
 
                                                                                 </div>
                                                                         }
@@ -256,20 +275,57 @@ const ShowProduct = () => {
                                                             <td className="px-6 py-4 border">{eachData?.price}</td>
                                                             <td className="px-6 py-4 border">{eachData?.stock}</td>
                                                             <td className="px-6 py-4 border">{eachData?.weight}</td>
-                                                            <td className="px-6 py-4 border">
-                                                                <a
-                                                                    href="#"
-                                                                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                                            <td className="px-9 py-4 border ">
+                                                                <Link
+                                                                    to={`/edit/${eachData?.category}/${eachData._id}`}
+                                                                    className="font-medium mr-5 text-blue-600 dark:text-blue-500 hover:underline"
                                                                 >
                                                                     Edit
-                                                                </a>
+                                                                </Link>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault(); // Prevent any default behavior
+                                                                        handleDelete(eachData.category, eachData._id); // Pass the category and id directly
+                                                                    }}
+                                                                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                                                >
+                                                                    Delete
+                                                                </button>
+
                                                             </td>
                                                         </tr>
                                                     ))
                                                 }
                                             </tbody>
+                                            {/* <div className="pagination">
+                                                {Array.from({ length: totalPages }, (_, index) => (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() => handlePageClick(index + 1)}
+                                                        className={currentPage === index + 1 ? "active" : ""}
+                                                    >
+                                                        {index + 1}
+                                                    </button>
+                                                ))}
+                                            </div> */}
+
 
                                         </table>
+                                    </div>
+                                    <div className="flex justify-center py-4">
+                                        <div className="join space-x-2">
+                                            {
+                                                Array.from({ length: totalPages }, (_, index) => (
+                                                    <button
+                                                        key={index}
+                                                        onClick={() => handlePageClick(index + 1)}
+                                                        className={`join-item px-4 py-2 text-lg font-semibold rounded-md transition-all duration-200 ${currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-600 hover:bg-blue-300"}`}
+                                                    >
+                                                        {index + 1}
+                                                    </button>
+                                                ))
+                                            }
+                                        </div>
                                     </div>
                                     <div
                                         id="editUserModal"

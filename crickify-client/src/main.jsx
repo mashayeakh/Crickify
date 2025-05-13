@@ -38,6 +38,7 @@ import ShowJersey from './components/Home/Jersey/ShowJersey.jsx'
 import AddJersey from './components/User_Actions/JerseyManage/AddJersey/AddJersey.jsx'
 import JerseyDetails from './components/Home/Jersey/JerseyDetails.jsx'
 import Profile from './components/User/Profile/Profile.jsx'
+import EditProduct from './components/User_Actions/Edit/EditProduct.jsx'
 // import FeatturedProductsProvider from './components/Context/FeatturedProductsProvider.jsx'
 
 
@@ -200,6 +201,20 @@ const router = createBrowserRouter(
           path: "/jersey_management/add-jersey",
           element: <AddJersey />,
         },
+
+
+        //! Edit-----------------------
+        {
+          path: "edit/:category/:_id",
+          element: <EditProduct />,
+          loader: ({ params }) => {
+            // console.log("Params : ", params);
+            return fetch(`http://localhost:5000/edit/${params.category}/${params._id}`)
+          }
+        },
+
+
+
 
         //! -------------------- Profile -----------------------------------------
         {

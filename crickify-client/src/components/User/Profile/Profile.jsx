@@ -6,7 +6,7 @@ import { AuthContext } from '../../Context/AuthContextProvider';
 const Profile = () => {
 
     const { user } = useContext(AuthContext);
-    const [isEditing, setIsEditing] = useState(user?.displayName || false);
+    const [isEditing, setIsEditing] = useState();
 
 
 
@@ -126,7 +126,7 @@ const Profile = () => {
                         </div>
 
                         <div className="card-actions justify-between mt-10 px-10">
-                            <div className="btn btn-primary">Change your password</div>
+                            {/* <div className="btn btn-primary">Change your password</div> */}
                             <div className="btn btn-success">Save</div>
                         </div>
                     </div>

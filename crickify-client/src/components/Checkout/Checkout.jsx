@@ -17,14 +17,34 @@ const Checkout = () => {
     const { fetchProductsByCategoryAndId, fProducts } = useContext(ProductContext);
     const { cartCount } = useContext(cartContext);
 
+    // useEffect(() => {
+    //     if (category && id) {
+    //         fetchProductsByCategoryAndId(category, id);  // Fetch product details
+    //     }
+    // }, [category, id, fetchProductsByCategoryAndId]);
+
+
+
     useEffect(() => {
-        if (category && id) {
-            fetchProductsByCategoryAndId(category, id);  // Fetch product details
+        if (fProducts) {
+            console.log("Fetched Product", fProducts);
         }
-    }, [category, id, fetchProductsByCategoryAndId]);
+    }, [fProducts]);
+
+
+    // console.log("Fetch ");
+
+
 
     console.log("Cart Count ", cartCount.length);
+
     console.log("Fetched Product", fProducts);
+
+
+
+    console.log("products by category", fetchProductsByCategoryAndId);
+
+
 
     console.log("Deli method = ", deliMethod);
 
@@ -34,15 +54,6 @@ const Checkout = () => {
         navigate(`/${category}/{id}/payment`, {
             state: { paymentMethod: deliMethod }
         })
-
-
-        // if (deliMethod === "cc") {
-        //     navigate(`/${category}/{id}/payment`);
-        //     // <UserPayment f={deliMethod} /> ==>>> wrong
-        // } else {
-        //     navigate(`/${category}/{id}/payment`);
-        //     // <UserPayment fc={deliMethod} /> ===>> wrong
-        // }
     }
 
 
@@ -136,9 +147,9 @@ const Checkout = () => {
                         </div>
                     </form>
                 </div>
-                <div className="w-1/2 border border-red-400 p-5">
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores voluptas velit esse maxime nesciunt saepe ducimus odit, maiores expedita quae illo, incidunt officiis sunt eaque, pariatur libero soluta odio ullam.
-                </div>
+                {/* <div className="w-1/2 border bonsectetur adipisicing elit. Dolores voluptas velit esse maxime nesciunt saepe ducimus odit, maiores expedita quae illo, incidorder-red-400 p-5">
+                    Lorem ipsum, dolor sit amet cunt officiis sunt eaque, pariatur libero soluta odio ullam.
+                </div> */}
 
             </div>
 
