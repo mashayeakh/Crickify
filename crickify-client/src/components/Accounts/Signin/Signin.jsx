@@ -1,7 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { AuthContext } from '../../Context/AuthContextProvider'
 import { patchMethod } from '../../Utils/Apis'
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa6";
 
 const Signin = () => {
 
@@ -15,6 +17,11 @@ const Signin = () => {
 
     const navigate = useNavigate();
     const { loginUser, user } = useContext(AuthContext);
+
+
+    const [showPass, setShowPass] = useState(false);
+    // const [showConfirmPass, setShowConfirmPass] = useState(false);
+
 
     const handleSignup = (e) => {
         e.preventDefault();
@@ -102,16 +109,19 @@ const Signin = () => {
                                 type="email"
                                 id="email"
                                 name='email'
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@flowbite.com" required />
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@gmail.com" required />
                         </div>
-                        <div className="mb-5">
+                        <div className="mb-5 relative z-0">
                             <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
 
                             <input
-                                type="password"
+                                type={showPass ? "text" : "password"}
                                 id="password"
                                 name="password"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="#$%^&fadsr3454" required />
+                            <span onClick={() => setShowPass(!showPass)} className='absolute top-[60%] right-3 text-lg cursor-pointer'>
+                                {showPass ? <FaEye /> : <FaEyeSlash />}
+                            </span>
                         </div>
                         <div className="flex items-start mb-5">
 

@@ -28,7 +28,7 @@ const ReuseBrands = () => {
     console.log("USER = ", user);
 
     if (loading) {
-        return <p>Loading user...</p>; // or a spinner
+        return <p>Loading...</p>; // or a spinner
     }
 
 

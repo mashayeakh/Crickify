@@ -78,17 +78,9 @@ const Layout = ({ category }) => {
     };
 
 
-    const itemsToRender = isFilterActive
-        ? filteredProduct
-        : category === "accesories"
-            ? accesories
-            : category === "jersies"
-                ? jerseyProduct
-                : category === "boots"
-                    ? bootsProduct
-                    : category === "ball"
-                        ? product
-                        : product;
+    const itemsToRender =
+        isFilterActive ? filteredProduct : category === "accesories" ? accesories : category === "jersies" ? jerseyProduct : category === "boots" ? bootsProduct :
+            category === "ball" ? product : category === "bat" ? product : product;
 
 
     console.log("itemsToRender", itemsToRender);
@@ -103,7 +95,7 @@ const Layout = ({ category }) => {
     console.log("USER = ", user);
 
     if (loading) {
-        return <p>Loading user...</p>; // or a spinner
+        return <p>Loading ...</p>; // or a spinner
     }
 
 
@@ -128,15 +120,15 @@ const Layout = ({ category }) => {
         <>
             <div className='flex px-5'>
                 {/* Sidebar Filter */}
-                <div className='w-[20%] relative size-32 rounded-5xl'>
+                <div className='w-[20%] relative size-32 rounded-5xl mt-8' >
                     <div className='bg-white shadow-2xl p-4'>
                         <p className='text-xl font-bold'>Filter</p>
                         <div className="divider "></div>
                         <div >
-                            <div className='text-lg font-semibold'>Category</div>
+                            <div className='text-lg font-semibold'>Discount</div>
 
                             {/* Category filter UI */}
-                            <div class="flex py-4">
+                            {/* <div class="flex py-4">
                                 <div class="flex items-center me-4">
                                     <input id="inline-radio" type="radio" value="" name="inline-radio-group" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                     <label for="inline-radio" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Active
@@ -147,7 +139,7 @@ const Layout = ({ category }) => {
                                     <label for="inline-2-radio" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">In active</label>
                                 </div>
 
-                            </div>
+                            </div> */}
 
                             <div className="divider"></div>
 
@@ -155,15 +147,27 @@ const Layout = ({ category }) => {
                             <div className='text-lg px-4'>
                                 <div className='flex items-center gap-3'>
                                     <input
-                                        type="checkbox"
-                                        className="checkbox checkbox-info"
-                                        onChange={(e) => { setDiscount(e.target.checked ? 20 : null) }}
+                                        type="radio"
+                                        name="discount"
+                                        className="radio radio-info"
+                                        onChange={() => setDiscount(10)}
                                     />
-                                    <p className=''>
-                                        20% or more
-                                    </p>
+                                    <p>10% or more</p>
                                 </div>
                             </div>
+
+                            <div className='text-lg px-4'>
+                                <div className='flex items-center gap-3'>
+                                    <input
+                                        type="radio"
+                                        name="discount"
+                                        className="radio radio-info"
+                                        onChange={() => setDiscount(20)}
+                                    />
+                                    <p>20% or more</p>
+                                </div>
+                            </div>
+
 
                         </div>
 

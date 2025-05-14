@@ -124,11 +124,11 @@ const Navbar = () => {
                                         <GoPerson size={30} />
                                     </button>
                             }
-                            <button className="bt btn-ghost btn-circle">
+                            {/* <button className="bt btn-ghost btn-circle">
                                 <div className="indicator">
                                     <CiSearch size={30} />
                                 </div>
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </div>
